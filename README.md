@@ -27,55 +27,56 @@
 
 ---
 
-## Instalação (Docker / EasyPanel)
+## MarkItDown API 🚀
 
-### 1. Clone o repositório
+Uma API robusta baseada em FastAPI para converter qualquer documento em Markdown limpo, otimizada para LLMs (RAG) e com suporte local a OCR.
 
-```bash
-git clone https://github.com/seuusuario/markitdown-api.git
-cd markitdown-api
-```
+## ✨ Funcionalidades
 
-### 2. Variáveis de ambiente
+- **Múltiplos Formatos**: Suporta Office (Word, Excel, PPT), PDF, HTML e mais.
+- **Suporte nativo a Base64**: Envie arquivos diretamente via JSON.
+- **OCR Integrado**: Utiliza Tesseract OCR para ler texto de imagens e documentos escaneados localmente.
+- **Resiliência**: Detecção inteligente de extensões para arquivos mal formatados.
+- **Segurança**: Proteção via API Key.
 
-Crie um arquivo `.env` ou configure via EasyPanel:
+## 🚀 Como Executar
 
-```env
-API_KEY=supersegredo123
-MAX_FILE_SIZE=52428800  # 50 MB
-```
+### Via Docker (Recomendado)
 
-### 3. Docker
+1. Clone o repositório.
+2. Configure sua `API_KEY` no arquivo `.env`.
+3. Build e suba o container:
+   ```bash
+   docker build -t markitdown-api .
+   docker run -d -p 8000:8000 --env-file .env markitdown-api
+   ```
 
-```bash
-docker build -t markitdown-api .
-docker run -p 8000:8000 --env-file .env markitdown-api
-```
+## 🛠 Endpoints
 
-No EasyPanel, basta criar um **App Docker** apontando para este Dockerfile e setar as mesmas variáveis.
+### 1. Upload Direto
+`POST /convert`
+- **Body**: `multipart/form-data` com campo `file`.
+- **Header**: `x-api-key: SUA_CHAVE`.
 
----
+### 2. Base64
+`POST /convert-base64`
+- **Body**: `application/json`
+  ```json
+  {
+    "filename": "teste.pdf",
+    "mimetype": "application/pdf",
+    "base64_content": "JVBERi0xLjQKJ..."
+  }
+  ```
+- **Header**: `x-api-key: SUA_CHAVE`.
 
-## Endpoints
+## 🧠 OCR (Reconhecimento de Texto)
 
-### `POST /convert`
+A API detecta automaticamente quando um arquivo é uma imagem ou um PDF sem texto extraível e aciona o Tesseract OCR (Português/Inglês) para garantir que o conteúdo seja recuperado.
 
-Converte um arquivo enviado para Markdown.
+## 📝 Documentação Adicional
 
-**Headers:**
-
-| Nome      | Valor            | Obrigatório |
-| --------- | ---------------- | ----------- |
-| X-API-Key | `sua_chave_aqui` | Sim         |
-
-**Body:**
-
-* `multipart/form-data`
-* Field Name: `file`
-* Binary Property: arquivo a ser convertido
-
-**Resposta:**
-
+Veja detalhes mais técnicos no diretório `/.explicações`.
 ```json
 {
   "filename": "documento.pdf",
@@ -85,7 +86,6 @@ Converte um arquivo enviado para Markdown.
 }
 ```
 
-**Erros possíveis:**
 
 * `401 Unauthorized` → API_KEY inválida
 * `413 Payload Too Large` → arquivo maior que o limite

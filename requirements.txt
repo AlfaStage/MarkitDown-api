@@ -2,3 +2,5 @@ fastapi
 uvicorn
 markitdown
 python-multipart
+pytesseract
+Pillow

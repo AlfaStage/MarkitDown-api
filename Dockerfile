@@ -2,9 +2,13 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# dependências do sistema (PDF, docx, etc.)
+# Dependências do sistema (PDF, docx, imagens e OCR)
 RUN apt-get update && apt-get install -y \
     poppler-utils \
+    tesseract-ocr \
+    tesseract-ocr-por \
+    tesseract-ocr-eng \
+    libtesseract-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
